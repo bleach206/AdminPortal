@@ -1,12 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using Model.Interface;
+using Repository;
+using Repository.Interface;
+using Service;
+using Service.Interface;
 
 namespace AdminPortal
 {
@@ -22,6 +24,8 @@ namespace AdminPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Setup connection properties and url           
+            ConfigureIOC(services);
             services.AddMvc();
         }
 
@@ -54,6 +58,19 @@ namespace AdminPortal
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+        }
+
+        /// <summary>
+        /// Setup IOC containter
+        /// </summary>
+        /// <param name="services"></param>
+        public void ConfigureIOC(IServiceCollection services)
+        {
+            services.AddScoped<IEmployeeServiceSolr<IEmployee>, EmployeeServiceSolr>();
+            services.AddTransient<IEmployeeRepositorySolr<IEmployee>>(repository => new EmployeeRepositorySolr(Configuration.GetValue<string>("AppSettings:SolrUrl")));
+
+            services.AddScoped<IEmpoyeeServiceSql<IEmployee>, EmployeeServiceSql>();
+            services.AddTransient<IEmployeeRepositorySql<IEmployee>, EmployeeRepositorySql>(repository => new EmployeeRepositorySql(Configuration.GetValue<string>("AppSettings:SqlConnection")));
         }
     }
 }
