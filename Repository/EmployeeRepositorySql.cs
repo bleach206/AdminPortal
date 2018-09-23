@@ -17,10 +17,7 @@ namespace Repository
 
         #region Constructor
 
-        public EmployeeRepositorySql(string connection)
-        {
-            _connection = connection;
-        }
+        public EmployeeRepositorySql(string connection) => _connection = connection;        
         #endregion
 
         #region Method

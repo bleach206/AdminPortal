@@ -21,10 +21,7 @@ namespace Repository
 
         #region Constructor
 
-        public EmployeeRepositorySolr(string url)
-        {
-            _url = url;
-        }
+        public EmployeeRepositorySolr(string url) => _url = url;        
         #endregion
 
         #region Mothods

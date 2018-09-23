@@ -6,7 +6,7 @@ namespace Model.Interface
     {
         int EmployeeId { get; set; }
         string FullName { get; set; }
-        int ManagerId { get; set; }
+        int ManagerId { get; set; }        
         DateTime DateOfJoining { get; set; }
     }
 }

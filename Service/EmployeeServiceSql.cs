@@ -13,18 +13,12 @@ namespace Service
 
         #region Constructor
 
-        public EmployeeServiceSql(IEmployeeRepositorySql<IEmployee> repository)
-        {
-            _repository = repository;
-        }
+        public EmployeeServiceSql(IEmployeeRepositorySql<IEmployee> repository) => _repository = repository;
         #endregion
 
         #region Methods
 
-        public bool CreateEmployee(IEmployee employee)
-        {
-            return _repository.CreateEmployee(employee);
-        }
+        public bool CreateEmployee(IEmployee employee) => _repository.CreateEmployee(employee);        
         #endregion
     }
 }

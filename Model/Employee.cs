@@ -9,7 +9,7 @@ namespace Model
     {
         public int EmployeeId { get; set; }
         public string FullName { get; set; }
-        public int ManagerId { get; set; }
+        public int ManagerId { get; set; }        
         public DateTime DateOfJoining { get; set; }
     }
 }

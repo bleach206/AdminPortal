@@ -22,12 +22,7 @@ namespace AdminPortal.Controllers
 
         #region Constructor
 
-        public EmployeeController(IEmployeeServiceSolr<IEmployee> serviceSolr, IEmpoyeeServiceSql<IEmployee> serviceSql, ILogger<EmployeeController> logger)
-        {
-            _servicesSolr = serviceSolr;
-            _servicesSql = serviceSql;
-            _logger = logger;
-        }
+        public EmployeeController(IEmployeeServiceSolr<IEmployee> serviceSolr, IEmpoyeeServiceSql<IEmployee> serviceSql, ILogger<EmployeeController> logger) => (_servicesSolr, _servicesSql, _logger) = (serviceSolr, serviceSql, logger);       
         #endregion
 
         #region Methods
@@ -47,7 +42,7 @@ namespace AdminPortal.Controllers
             return null;
         }
 
-        // GET: api/Employee/5
+        // GET: api/Employee/phillip
         [HttpGet("{name}", Name = "Name")]
         public IEnumerable<Employee> Get(string name)
         {
