@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 using Model;
 using Model.Interface;
@@ -26,33 +28,26 @@ namespace Repository
 
         #region Mothods
 
-        public IEnumerable<IEmployee> GetEmployee()
+        public async Task<IEnumerable<IEmployee>> GetEmployee()
         {
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(_url + "select?q=*:*");
-                request.ContentType = "application/json; charset=utf-8";
-                var json = string.Empty;
-                using (var response = (HttpWebResponse)request.GetResponse())
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    json = sr.ReadToEnd();
-                }
+                var client = new HttpClient();
+                var response = await client.GetAsync(_url + "select?q=*:*");
+                response.EnsureSuccessStatusCode();
 
-                if (!string.IsNullOrWhiteSpace(json))
-                {
-                    var employeObject = JObject.Parse(json);
-                    var employeList = employeObject["response"]["docs"].ToObject<Employee[]>().ToList();
-                    return employeList;
-                }
-
-                return null;
+                var employees = await response.Content.ReadAsStringAsync();
+                return await Task.Run(() => JObject.Parse(employees)["response"]["docs"].ToObject<Employee[]>().ToList());           
             }
-            catch (WebException)
+            catch (ArgumentNullException)
             {
                 throw;
             }
-            catch (IOException)
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (HttpRequestException)
             {
                 throw;
             }

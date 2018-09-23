@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using Model;
 using Model.Interface;
 using Service.Interface;
+using System.Threading.Tasks;
 
 namespace AdminPortal.Controllers
 {
@@ -28,18 +30,20 @@ namespace AdminPortal.Controllers
         #region Methods
         // GET: api/Employee
         [HttpGet]
-        public IEnumerable<Employee> Get()
+        [ProducesResponseType(200, Type = typeof(Task<IEnumerable<Employee>>))]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var empoyeeList = _servicesSolr.GetEmployee();
-                return (IEnumerable<Employee>)empoyeeList;
+                var empoyeeList = await _servicesSolr.GetEmployee();
+                return Ok((IEnumerable<Employee>)empoyeeList);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Get All Employee Error");
-            }
-            return null;
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }            
         }
 
         // GET: api/Employee/phillip

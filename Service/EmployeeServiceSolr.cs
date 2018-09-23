@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Model.Interface;
 using Repository.Interface;
@@ -20,7 +21,7 @@ namespace Service
 
         #region Method
 
-        IEnumerable<IEmployee> IEmployeeServiceSolr<IEmployee>.GetEmployee() => _repository.GetEmployee();
+        async Task<IEnumerable<IEmployee>> IEmployeeServiceSolr<IEmployee>.GetEmployee() => await _repository.GetEmployee();
 
         IEnumerable<IEmployee> IEmployeeServiceSolr<IEmployee>.GetEmployeeByName(string name) => _repository.GetEmployeeByName(name);        
         #endregion

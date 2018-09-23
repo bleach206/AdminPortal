@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Model.Interface;
 
@@ -10,7 +11,7 @@ namespace Service.Interface
         /// get list of all employees
         /// </summary>
         /// <returns>IEnumerable of type generic</returns>
-        IEnumerable<T> GetEmployee();
+        Task<IEnumerable<T>> GetEmployee();
 
         /// <summary>
         /// get employee by name
