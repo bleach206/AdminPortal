@@ -24,7 +24,7 @@ namespace AdminPortal.Controllers
 
         #region Constructor
 
-        public EmployeeController(IEmployeeServiceSolr<IEmployee> serviceSolr, IEmpoyeeServiceSql<IEmployee> serviceSql, ILogger<EmployeeController> logger) => (_servicesSolr, _servicesSql, _logger) = (serviceSolr, serviceSql, logger);       
+        public EmployeeController(IEmployeeServiceSolr<IEmployee> serviceSolr, IEmpoyeeServiceSql<IEmployee> serviceSql, ILogger<EmployeeController> logger) => (_servicesSolr, _servicesSql, _logger) = (serviceSolr, serviceSql, logger);
         #endregion
 
         #region Methods
@@ -43,26 +43,31 @@ namespace AdminPortal.Controllers
             {
                 _logger.LogError(ex, "Get All Employee Error");
                 return StatusCode(StatusCodes.Status500InternalServerError);
-            }            
+            }
         }
 
         // GET: api/Employee/phillip
         [HttpGet("{name}", Name = "Name")]
-        public IEnumerable<Employee> Get(string name)
+        [ProducesResponseType(200, Type = typeof(Task<IEnumerable<Employee>>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Get(string name)
         {
             try
             {
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var empoyeeList = _servicesSolr.GetEmployeeByName(name);
-                    return (IEnumerable<Employee>)empoyeeList;
+                    var empoyeeList = await _servicesSolr.GetEmployeeByName(name);
+
+                    return Ok((IEnumerable<Employee>)empoyeeList);
                 }
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Get employ by name error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return null;
         }
 
         // POST: api/Employee

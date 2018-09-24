@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,21 +21,29 @@ namespace Repository
 
         #region Constructor
 
-        public EmployeeRepositorySolr(string url) => _url = url;        
+        public EmployeeRepositorySolr(string url) => _url = url;
         #endregion
 
         #region Mothods
 
-        public async Task<IEnumerable<IEmployee>> GetEmployee()
+        public async Task<IEnumerable<IEmployee>> GetEmployee() => await Get(_url + "select?q=*:*");
+
+
+        public async Task<IEnumerable<IEmployee>> GetEmployeeByName(string name) => await Get(_url + "select?q=FullName:" + name);        
+        #endregion
+
+        #region Private Methods
+
+        private async Task<IEnumerable<IEmployee>> Get(string url)
         {
             try
             {
                 var client = new HttpClient();
-                var response = await client.GetAsync(_url + "select?q=*:*");
+                var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
                 var employees = await response.Content.ReadAsStringAsync();
-                return await Task.Run(() => JObject.Parse(employees)["response"]["docs"].ToObject<Employee[]>().ToList());           
+                return await Task.Run(() => JObject.Parse(employees)["response"]["docs"].ToObject<Employee[]>().ToList());
             }
             catch (ArgumentNullException)
             {
@@ -48,42 +54,6 @@ namespace Repository
                 throw;
             }
             catch (HttpRequestException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public IEnumerable<IEmployee> GetEmployeeByName(string name)
-        {
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create(_url + "select?q=FullName:" + name);
-                request.ContentType = "application/json; charset=utf-8";
-                var json = string.Empty;
-                using (var response = (HttpWebResponse)request.GetResponse())
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    json = sr.ReadToEnd();
-                }
-
-                if (!string.IsNullOrWhiteSpace(json))
-                {
-                    var employeObject = JObject.Parse(json);
-                    var employeList = employeObject["response"]["docs"].ToObject<Employee[]>().ToList();
-                    return employeList;
-                }
-
-                return null;
-            }
-            catch (WebException)
-            {
-                throw;
-            }
-            catch (IOException)
             {
                 throw;
             }

@@ -18,6 +18,6 @@ namespace Repository.Interface
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        IEnumerable<T> GetEmployeeByName(string name);
+        Task<IEnumerable<T>> GetEmployeeByName(string name);
     }
 }

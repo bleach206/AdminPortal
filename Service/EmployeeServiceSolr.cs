@@ -23,7 +23,7 @@ namespace Service
 
         async Task<IEnumerable<IEmployee>> IEmployeeServiceSolr<IEmployee>.GetEmployee() => await _repository.GetEmployee();
 
-        IEnumerable<IEmployee> IEmployeeServiceSolr<IEmployee>.GetEmployeeByName(string name) => _repository.GetEmployeeByName(name);        
+        async Task<IEnumerable<IEmployee>> IEmployeeServiceSolr<IEmployee>.GetEmployeeByName(string name) => await _repository.GetEmployeeByName(name);        
         #endregion
     }
 }
